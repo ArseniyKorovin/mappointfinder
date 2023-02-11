@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.selectedpoint.SelectedPointToMapFragment"
+    android:background="@color/white"
+    android:paddingHorizontal="16dp">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_selected_point"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:layout_gravity="center_horizontal|top"
+        android:text="@string/title_point_is_empty"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_show_to_map"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="32dp"
+        android:textSize="24sp"
+        android:textAllCaps="false"
+        android:text="@string/btn_show_to_map"
+        android:padding="10dp"/>
+</FrameLayout>

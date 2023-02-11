@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph.xml"
+    app:startDestination="@id/navigation_selected_point_to_map">
+
+    <fragment
+        android:id="@+id/navigation_selected_point_to_map"
+        android:name="ru.ascintegraciya.mappointfinder.presentation.selectedpoint.SelectedPointToMapFragment"
+        tools:layout="@layout/fragment_selected_point_to_map" />
+
+    <fragment
+        android:id="@+id/navigation_map"
+        android:name="ru.ascintegraciya.mappointfinder.presentation.map.MapFragment"
+        tools:layout="@layout/fragment_map" />
+</navigation>

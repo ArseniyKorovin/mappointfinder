@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">mappointfinder</string>
+    <string name="app_name">Test task</string>
+    <string name="title_point_is_empty">Точка не задана</string>
+    <string name="btn_show_to_map">Показать на карте</string>
+    <string name="btn_confirm_point">Подтвердить выбранную точку</string>
+    <string name="title_point">%1$s (%2$s, %3$s)</string>
 </resources>
