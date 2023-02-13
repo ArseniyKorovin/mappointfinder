@@ -5,19 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.layers.GeoObjectTapListener
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.GeoObjectSelectionMetadata
 import com.yandex.mapkit.map.InputListener
 import com.yandex.mapkit.map.Map
-import kotlinx.coroutines.launch
 import ru.ascintegraciya.mappointfinder.data.entity.PointToMap
 import ru.ascintegraciya.mappointfinder.databinding.FragmentMapBinding
 import ru.ascintegraciya.mappointfinder.utils.setNavigationResult
@@ -41,6 +38,8 @@ class MapFragment : Fragment() {
 
     private lateinit var viewModel: MapViewModel
     private lateinit var binding: FragmentMapBinding
+    private lateinit var tapListener: GeoObjectTapListener
+    private lateinit var inputListener: InputListener
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,19 +54,34 @@ class MapFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initViewModel()
+        initTapListener()
+        initInputListener()
         setupScreen()
-        observeNewPointToMap()
         setListeners()
     }
 
-    private fun observeNewPointToMap() = viewLifecycleOwner.lifecycleScope.launch {
-        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
-            viewModel.newPointToMap.collect { wrapper ->
-                wrapper.getContentIfNotHandled()?.let { pointToMap ->
-                    setNavigationResult(viewModel.pointToMapCode, pointToMap)
-                    findNavController().popBackStack()
-                }
+    private fun initInputListener() {
+        inputListener = object : InputListener {
+            override fun onMapTap(p0: Map, p1: Point) {
+                viewModel.setNewPointToMap(p1.latitude, p1.longitude)
             }
+
+            override fun onMapLongTap(p0: Map, p1: Point) {}
+        }
+
+    }
+
+    private fun initTapListener() {
+        tapListener = GeoObjectTapListener { geoObjectTapEvent ->
+            val selectionMetadata = geoObjectTapEvent
+                .geoObject
+                .metadataContainer
+                .getItem(GeoObjectSelectionMetadata::class.java)
+
+            if (selectionMetadata != null) {
+                binding.mapView.map.selectGeoObject(selectionMetadata.id, selectionMetadata.layerId)
+            }
+            selectionMetadata != null
         }
     }
 
@@ -86,31 +100,13 @@ class MapFragment : Fragment() {
     }
 
     private fun setListeners() {
-        binding.mapView.map.addTapListener { geoObjectTapEvent ->
-            val selectionMetadata = geoObjectTapEvent
-                .geoObject
-                .metadataContainer
-                .getItem(GeoObjectSelectionMetadata::class.java)
-
-            if (selectionMetadata != null) {
-                binding.mapView.map.selectGeoObject(selectionMetadata.id, selectionMetadata.layerId)
-            }
-            selectionMetadata != null
-        }
-        binding.mapView.map.addInputListener(
-            object : InputListener {
-                override fun onMapTap(p0: Map, p1: Point) {
-                    binding.mapView.map.deselectGeoObject()
-                }
-
-                override fun onMapLongTap(p0: Map, p1: Point) {}
-            }
-        )
+        binding.mapView.map.addTapListener(tapListener)
+        binding.mapView.map.addInputListener(inputListener)
         binding.btnConfirmPoint.setOnClickListener {
-            //Здесь необходимо взять координаты отмеченой точки и Адрес и передать в viewModel
-            // пока что здесь просто заглушка
-            //viewModel.setNewPointToMap(PointToMap(latitude = , longitude = , address =))
-            findNavController().popBackStack()
+            viewModel.newPointToMap.value.getContentIfNotHandled()?.let { pointToMap ->
+                setNavigationResult(viewModel.pointToMapCode, pointToMap)
+                findNavController().popBackStack()
+            }
         }
     }
 

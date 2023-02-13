@@ -14,8 +14,8 @@ class MapViewModel(val pointToMap: PointToMap?, val pointToMapCode: String) : Vi
     )
     val newPointToMap = mNewPointToMap.asStateFlow()
 
-    fun setNewPointToMap(newPointToMap: PointToMap) {
-        mNewPointToMap.value = OneTimeDataWrapper(newPointToMap)
+    fun setNewPointToMap(latitude: Double, longitude: Double, address: String = "Address") {
+        mNewPointToMap.value = OneTimeDataWrapper(PointToMap(latitude,longitude, address))
     }
     @Suppress("UNCHECKED_CAST")
     class Factory(

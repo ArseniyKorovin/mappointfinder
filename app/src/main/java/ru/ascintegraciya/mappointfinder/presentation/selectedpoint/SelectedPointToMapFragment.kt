@@ -16,6 +16,7 @@ import ru.ascintegraciya.mappointfinder.data.entity.PointToMap
 import ru.ascintegraciya.mappointfinder.databinding.FragmentSelectedPointToMapBinding
 import ru.ascintegraciya.mappointfinder.presentation.map.MapFragment
 import ru.ascintegraciya.mappointfinder.utils.getNavigationResult
+import java.util.*
 
 class SelectedPointToMapFragment : Fragment() {
 
@@ -50,8 +51,8 @@ class SelectedPointToMapFragment : Fragment() {
                     binding.tvSelectedPoint.text = getString(
                         R.string.title_point,
                         pointToMap.address,
-                        pointToMap.latitude.toString(),
-                        pointToMap.longitude.toString()
+                        String.format(Locale.getDefault(), "%.5f", pointToMap.latitude),
+                        String.format(Locale.getDefault(), "%.5f", pointToMap.longitude)
                     )
                 }
             }
